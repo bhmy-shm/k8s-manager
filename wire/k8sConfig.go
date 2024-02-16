@@ -1,13 +1,14 @@
-package configs
+package wire
 
 import (
-	"github.com/bhmy-shm/gofks/pkg/errorx"
+	"github.com/bhmy-shm/gofks/core/errorx"
+	"github.com/bhmy-shm/gofks/core/logx"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
-	"view/internal/handler"
+	"manager/internal/handler"
 )
 
 type K8sConfig struct {
@@ -16,13 +17,16 @@ type K8sConfig struct {
 	NsHandler  *handler.NsHandler  `inject:"-"`
 }
 
-func NewK8sConfig() *K8sConfig {
+func newK8sConfig() *K8sConfig {
 	return &K8sConfig{}
 }
 
 func k8sRestConfig() *rest.Config {
 	config, err := clientcmd.BuildConfigFromFlags("", "resources/config")
-	errorx.Fatal(err, "build config is failed")
+	if err != nil {
+		logx.Errorf("build config is failed:%v", err)
+		errorx.Fatal(err)
+	}
 	config.Insecure = false
 	return config
 }

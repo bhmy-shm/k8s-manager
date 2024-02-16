@@ -2,7 +2,7 @@ package handler
 
 import (
 	corev1 "k8s.io/api/core/v1"
-	"view/internal/maps"
+	"manager/internal/maps"
 )
 
 type NsHandler struct {

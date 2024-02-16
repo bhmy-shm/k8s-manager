@@ -1,29 +1,20 @@
 package main
 
 import (
-	"github.com/bhmy-shm/gofks/gofk"
-	"view/configs"
-	"view/internal/controller"
-	"view/internal/middlewares"
+	"github.com/bhmy-shm/gofks"
+	"manager/internal/controllers"
+	"manager/internal/middlewares"
+	"manager/wire"
 )
 
 func main() {
 
-	gofk.Ignite(
-		middlewares.OnRequest(), //全局中间件
-	).
-		Config(
-			configs.NewK8sHandler(),    //1
-			configs.NewK8sConfig(),     //2
-			configs.NewK8sMaps(),       //3
-			configs.NewServiceConfig(), //4
+	gofks.Ignite("/v1", middlewares.OnRequest()).
+		WireApply(
+			wire.NewServiceWire(),
 		).
 		Mount(
-			//controllers.NewDynamic(), //todo
-			controllers.NewWsCtl(),
 			controllers.NewDeploymentCtl(),
-			controllers.NewPodCtl(),
-			controllers.NewNsCtl(),
 		).
-		Watcher().Launch()
+		Launch()
 }

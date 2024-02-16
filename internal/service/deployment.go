@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/bhmy-shm/gofks/pkg/errorx"
-	"view/internal/maps"
-	"view/model"
+	"github.com/bhmy-shm/gofks/core/errorx"
+	"manager/internal/maps"
+	"manager/model"
 )
 
 type DeploymentService struct {

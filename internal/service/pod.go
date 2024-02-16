@@ -1,6 +1,6 @@
 package service
 
-import "view/internal/maps"
+import "manager/internal/maps"
 
 type PodService struct {
 	PodMap *maps.PodMap `inject:"-"`

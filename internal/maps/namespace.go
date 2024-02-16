@@ -2,8 +2,8 @@ package maps
 
 import (
 	corev1 "k8s.io/api/core/v1"
+	"manager/model"
 	"sync"
-	"view/model"
 )
 
 type NsMapStruct struct {
