@@ -1,22 +1,28 @@
 package controllers
 
-//type NsCtl struct {
-//	NsMap *maps.NsMapStruct `inject:"-"`
-//}
-//
-//func NewNsCtl() *NsCtl {
-//	return &NsCtl{}
-//}
-//
-//func (this *NsCtl) ListAll(c *gin.Context) {
-//	gofk.Successful(c, this.NsMap.ListAll())
-//}
-//
-//func (this *NsCtl) Build(gofk *gofk.Gofk) {
-//	ns := gofk.Group("ns")
-//	ns.GET("/nsList", this.ListAll)
-//}
-//
-//func (*NsCtl) Name() string {
-//	return "NsCtl"
-//}
+import (
+	"github.com/bhmy-shm/gofks"
+	"github.com/gin-gonic/gin"
+	"manager/wire"
+)
+
+type NamespaceCtl struct {
+	*wire.ServiceWire `inject:"-"`
+}
+
+func NewNamespaceCtl() *NamespaceCtl {
+	return &NamespaceCtl{}
+}
+
+func (n *NamespaceCtl) Build(gofk *gofks.Gofk) {
+	ns := gofk.Group("namespace")
+	ns.GET("/list", n.ListAll)
+}
+
+func (n *NamespaceCtl) Name() string {
+	return "NsCtl"
+}
+
+func (n *NamespaceCtl) ListAll(c *gin.Context) {
+	SuccessResp(c, n.Context().NameSpaceService.ListAll())
+}

@@ -4,28 +4,24 @@ import (
 	"manager/internal/maps"
 )
 
-type K8sMaps struct {
-	dm *maps.DeploymentMap
-	pm *maps.PodMap
-	nm *maps.NsMapStruct
-}
+type K8sMaps struct{}
 
-func newK8sMaps() *K8sMaps {
-	return &K8sMaps{
-		dm: &maps.DeploymentMap{},
-		pm: &maps.PodMap{},
-		nm: &maps.NsMapStruct{},
-	}
+func NewK8sMaps() *K8sMaps {
+	return &K8sMaps{}
 }
 
 func (this *K8sMaps) InitDepMap() *maps.DeploymentMap {
-	return this.dm
+	return &maps.DeploymentMap{}
 }
 
 func (this *K8sMaps) InitPodMap() *maps.PodMap {
-	return this.pm
+	return &maps.PodMap{}
 }
 
-func (this *K8sMaps) InitNsMap() *maps.NsMapStruct {
-	return this.nm
+func (this *K8sMaps) InitNsMap() *maps.NamespaceMap {
+	return &maps.NamespaceMap{}
+}
+
+func (this *K8sMaps) InitEventMap() *maps.EventMap {
+	return &maps.EventMap{}
 }

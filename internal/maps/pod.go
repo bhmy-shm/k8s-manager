@@ -4,6 +4,7 @@ import (
 	"fmt"
 	corev1 "k8s.io/api/core/v1"
 	"reflect"
+	"sort"
 	"sync"
 )
 
@@ -13,7 +14,11 @@ type PodMap struct {
 
 func (this *PodMap) ListByNs(ns string) []*corev1.Pod {
 	if list, ok := this.data.Load(ns); ok {
-		return list.([]*corev1.Pod)
+		ret := list.([]*corev1.Pod)
+		sort.Slice(ret, func(i, j int) bool {
+			return ret[i].CreationTimestamp.Time.Before(ret[j].CreationTimestamp.Time)
+		})
+		return ret
 	}
 	return nil
 }

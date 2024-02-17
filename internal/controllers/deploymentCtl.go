@@ -7,7 +7,7 @@ import (
 )
 
 type DeploymentCtl struct {
-	wire *wire.ServiceWire `inject:"-"`
+	*wire.ServiceWire `inject:"-"`
 }
 
 func NewDeploymentCtl() *DeploymentCtl {
@@ -15,7 +15,7 @@ func NewDeploymentCtl() *DeploymentCtl {
 }
 
 func (d *DeploymentCtl) Build(gofk *gofks.Gofk) {
-	deploy := gofk.Group("/deployment")
+	deploy := gofk.Group("deployment")
 	deploy.GET("/list", d.GetList)
 }
 
@@ -30,7 +30,7 @@ func (d *DeploymentCtl) GetList(c *gin.Context) {
 		return
 	}
 
-	list, err := d.wire.Context().DepSvr.List(ns)
+	list, err := d.Context().DeploymentService.List(ns)
 	if err != nil {
 		InternalResp(c, RespField(err.Error(), d.Name()))
 		return

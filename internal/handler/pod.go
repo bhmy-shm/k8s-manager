@@ -1,28 +1,54 @@
 package handler
 
 import (
-	v1 "k8s.io/api/core/v1"
-	"log"
+	"github.com/bhmy-shm/gofks/core/logx"
+	"github.com/gin-gonic/gin"
+	corev1 "k8s.io/api/core/v1"
 	"manager/internal/maps"
+	"manager/internal/service"
+	"manager/internal/wscore"
 )
 
 type PodHandler struct {
-	PodMap *maps.PodMap `inject:"-"`
+	PodMap     *maps.PodMap        `inject:"-"`
+	PodService *service.PodService `inject:"-"`
 }
 
-func (this *PodHandler) OnAdd(obj interface{}) {
-	this.PodMap.Add(obj.(*v1.Pod))
+func (p *PodHandler) OnAdd(obj interface{}) {
+	p.PodMap.Add(obj.(*corev1.Pod))
+	ns := obj.(*corev1.Pod).Namespace
+	wscore.ClientMap.SendAll(
+		gin.H{
+			"type":   "pods",
+			"result": gin.H{"ns": ns, "data": p.PodService.ListByNs(ns)}, //todo 分页显示
+		},
+	)
 }
 
-func (this *PodHandler) OnUpdate(oldObj, newObj interface{}) {
-	err := this.PodMap.Update(newObj.(*v1.Pod))
+func (p *PodHandler) OnUpdate(oldObj, newObj interface{}) {
+	err := p.PodMap.Update(newObj.(*corev1.Pod))
 	if err != nil {
-		log.Println(err)
+		logx.Error(err)
+	} else {
+		ns := newObj.(*corev1.Pod).Namespace
+		wscore.ClientMap.SendAll(
+			gin.H{
+				"type":   "pods",
+				"result": gin.H{"ns": ns, "data": p.PodService.ListByNs(ns)},
+			},
+		)
 	}
 }
 
-func (this *PodHandler) OnDelete(obj interface{}) {
-	if d, ok := obj.(*v1.Pod); ok {
-		this.PodMap.Delete(d)
+func (p *PodHandler) OnDelete(obj interface{}) {
+	if d, ok := obj.(*corev1.Pod); ok {
+		p.PodMap.Delete(d)
+		ns := obj.(*corev1.Pod).Namespace
+		wscore.ClientMap.SendAll(
+			gin.H{
+				"type":   "pods",
+				"result": gin.H{"ns": ns, "data": p.PodService.ListByNs(ns)},
+			},
+		)
 	}
 }

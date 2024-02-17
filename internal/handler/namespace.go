@@ -6,20 +6,19 @@ import (
 )
 
 type NsHandler struct {
-	NsMap *maps.NsMapStruct `inject:"-"`
+	NsMap *maps.NamespaceMap `inject:"-"`
 }
 
-func (this *NsHandler) OnAdd(obj interface{}) {
-	this.NsMap.Add(obj.(*corev1.Namespace))
+func (n *NsHandler) OnAdd(obj interface{}) {
+	n.NsMap.Add(obj.(*corev1.Namespace))
 }
 
-func (this *NsHandler) OnUpdate(oldObj, newObj interface{}) {
-	this.NsMap.Update(newObj.(*corev1.Namespace))
-
+func (n *NsHandler) OnUpdate(oldObj, newObj interface{}) {
+	n.NsMap.Update(newObj.(*corev1.Namespace))
 }
 
-func (this *NsHandler) OnDelete(obj interface{}) {
+func (n *NsHandler) OnDelete(obj interface{}) {
 	if d, ok := obj.(*corev1.Namespace); ok {
-		this.NsMap.Delete(d)
+		n.NsMap.Delete(d)
 	}
 }

@@ -3,38 +3,45 @@ package maps
 import (
 	corev1 "k8s.io/api/core/v1"
 	"manager/model"
+	"sort"
 	"sync"
 )
 
-type NsMapStruct struct {
+type NamespaceMap struct {
 	data sync.Map // [key string] []*corev1.Namespace    key=>namespace的名称
 }
 
-func (this *NsMapStruct) Get(ns string) *corev1.Namespace {
-	if item, ok := this.data.Load(ns); ok {
+func (n *NamespaceMap) Get(ns string) *corev1.Namespace {
+	if item, ok := n.data.Load(ns); ok {
 		return item.(*corev1.Namespace)
 	}
 	return nil
 }
 
-func (this *NsMapStruct) Add(ns *corev1.Namespace) {
-	this.data.Store(ns.Name, ns)
+func (n *NamespaceMap) Add(ns *corev1.Namespace) {
+	n.data.Store(ns.Name, ns)
 }
 
-func (this *NsMapStruct) Update(ns *corev1.Namespace) {
-	this.data.Store(ns.Name, ns)
+func (n *NamespaceMap) Update(ns *corev1.Namespace) {
+	n.data.Store(ns.Name, ns)
 }
 
-func (this *NsMapStruct) Delete(ns *corev1.Namespace) {
-	this.data.Delete(ns.Name)
+func (n *NamespaceMap) Delete(ns *corev1.Namespace) {
+	n.data.Delete(ns.Name)
 }
 
 // ListAll 显示所有的 namespace
-func (this *NsMapStruct) ListAll() []*model.NsModel {
+func (n *NamespaceMap) ListAll() *model.NamespaceModel {
 	ret := make([]*model.NsModel, 0)
-	this.data.Range(func(key, value interface{}) bool {
-		ret = append(ret, &model.NsModel{Name: key.(string)})
-		return true
-	})
-	return ret
+
+	total, items := convertToMapItems(&n.data)
+	sort.Sort(items)
+	for _, item := range items {
+		ret = append(ret, &model.NsModel{Name: item.key})
+	}
+
+	return &model.NamespaceModel{
+		Total: total,
+		List:  ret,
+	}
 }

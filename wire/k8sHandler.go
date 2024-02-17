@@ -3,23 +3,24 @@ package wire
 import "manager/internal/handler"
 
 type K8sHandler struct {
-	dh *handler.DepHandler
-	ph *handler.PodHandler
-	nh *handler.NsHandler
 }
 
-func newK8sHandler() *K8sHandler {
+func NewK8sHandler() *K8sHandler {
 	return &K8sHandler{}
 }
 
-func (this *K8sHandler) DepHandlers() *handler.DepHandler {
-	return this.dh
+func (h *K8sHandler) DepHandlers() *handler.DepHandler {
+	return &handler.DepHandler{}
 }
 
-func (this *K8sHandler) PodHandler() *handler.PodHandler {
-	return this.ph
+func (h *K8sHandler) PodHandler() *handler.PodHandler {
+	return &handler.PodHandler{}
 }
 
-func (this *K8sHandler) NsHandler() *handler.NsHandler {
-	return this.nh
+func (h *K8sHandler) NsHandler() *handler.NsHandler {
+	return &handler.NsHandler{}
+}
+
+func (h *K8sHandler) EventHandler() *handler.EventHandler {
+	return &handler.EventHandler{}
 }

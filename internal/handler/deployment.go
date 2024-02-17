@@ -1,10 +1,13 @@
 package handler
 
 import (
+	"github.com/bhmy-shm/gofks/core/logx"
+	"github.com/gin-gonic/gin"
 	v1 "k8s.io/api/apps/v1"
-	"log"
 	"manager/internal/maps"
 	"manager/internal/service"
+	"manager/internal/wscore"
+	"manager/model"
 )
 
 type DepHandler struct {
@@ -12,26 +15,68 @@ type DepHandler struct {
 	DepService *service.DeploymentService `inject:"-"`
 }
 
-func (this *DepHandler) OnAdd(obj interface{}) {
-	this.DepMap.Add(obj.(*v1.Deployment))
-	//list, _ := this.DepService.List(obj.(*v1.Deployment).Namespace)
-	//wscore.ClientMap.SendAllDepList(list)
-}
+func (d *DepHandler) OnAdd(obj interface{}) {
 
-func (this *DepHandler) OnUpdate(oldObj, newObj interface{}) {
-	err := this.DepMap.Update(newObj.(*v1.Deployment))
-	if err != nil {
-		log.Println(err)
-	} else {
-		//list, _ := this.DepService.List(newObj.(*v1.Deployment).Namespace)
-		//wscore.ClientMap.SendAllDepList(list)
+	var (
+		err  error
+		list []*model.Deployment
+		ns   = obj.(*v1.Deployment).Namespace
+	)
+
+	deploy := obj.(*v1.Deployment)
+	d.DepMap.Add(deploy)
+	list, err = d.DepService.List(ns)
+	if err == nil {
+		wscore.ClientMap.SendAll(
+			gin.H{
+				"type":   "deployments",
+				"result": gin.H{"ns": ns, "data": list},
+			},
+		)
 	}
 }
 
-func (this *DepHandler) OnDelete(obj interface{}) {
-	if d, ok := obj.(*v1.Deployment); ok {
-		this.DepMap.Delete(d)
-		//list, _ := this.DepService.List(obj.(*v1.Deployment).Namespace)
-		//wscore.ClientMap.SendAllDepList(list)
+func (d *DepHandler) OnUpdate(oldObj, newObj interface{}) {
+	var (
+		err  error
+		list []*model.Deployment
+		ns   = newObj.(*v1.Deployment).Namespace
+	)
+
+	err = d.DepMap.Update(newObj.(*v1.Deployment))
+	if err != nil {
+		logx.Error(err)
+	} else {
+		list, err = d.DepService.List(ns)
+		if err == nil {
+			wscore.ClientMap.SendAll(
+				gin.H{
+					"type":   "deployments",
+					"result": gin.H{"ns": ns, "data": list},
+				},
+			)
+		}
+	}
+}
+
+func (d *DepHandler) OnDelete(obj interface{}) {
+	if deploy, ok := obj.(*v1.Deployment); ok {
+
+		var (
+			err  error
+			list []*model.Deployment
+			ns   = obj.(*v1.Deployment).Namespace
+		)
+
+		d.DepMap.Delete(deploy)
+		list, err = d.DepService.List(ns)
+		if err == nil {
+			wscore.ClientMap.SendAll(
+				gin.H{
+					"type":   "deployments",
+					"result": gin.H{"ns": ns, "data": list},
+				},
+			)
+		}
 	}
 }
