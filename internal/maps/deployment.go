@@ -8,7 +8,13 @@ import (
 )
 
 type DeploymentMap struct {
-	data sync.Map // map: [namespaces : v1.Deployments]
+	data *sync.Map // map: [namespaces : v1.Deployments]
+}
+
+func NewDeploymentMap() *DeploymentMap {
+	return &DeploymentMap{
+		data: new(sync.Map),
+	}
 }
 
 func (d *DeploymentMap) Add(dep *v1.Deployment) {

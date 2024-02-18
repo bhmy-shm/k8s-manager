@@ -17,7 +17,6 @@ func Deployment() *DeploymentService {
 }
 
 func (d *DeploymentService) List(ns string) ([]*model.Deployment, error) {
-
 	depList, err := d.DepMap.ListByNs(ns)
 	if err != nil {
 		logx.Error("deployment list By Namespace failed:", err)

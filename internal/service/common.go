@@ -5,6 +5,7 @@ import (
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -99,7 +100,7 @@ func StrToInt(str string, def int) int {
 	return ret
 }
 
-func (*CommonService) PageResource(current, size int, list []interface{}) *ItemsPage {
+func (c *CommonService) PageResource(current, size int, list []interface{}) *ItemsPage {
 	total := len(list)
 	if size == 0 || size > total {
 		size = 5 //默认 每页5个
@@ -135,4 +136,26 @@ func (*CommonService) PageResource(current, size int, list []interface{}) *Items
 	pageInfo.Data = newSet
 	pageInfo.PageNum = pageNum
 	return pageInfo
+}
+
+// ------------ ingress 解析标签 ----------------
+
+// 解析标签
+func (c *CommonService) parseAnnotations(str string) map[string]string {
+	replace := []string{"\t", " ", "\n", "\r\n"}
+	for _, r := range replace {
+		str = strings.ReplaceAll(str, r, "")
+	}
+
+	ret := make(map[string]string)
+	list := strings.Split(str, ";")
+
+	for _, item := range list {
+		ss := strings.Split(item, ":")
+		if len(str) == 2 {
+			ret[ss[0]] = ss[1]
+		}
+	}
+	return ret
+
 }

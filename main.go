@@ -21,6 +21,8 @@ func main() {
 			controllers.NewDeploymentCtl(),
 			controllers.NewNamespaceCtl(),
 			controllers.NewPodCtl(),
+			controllers.NewSvcCtl(),
+			controllers.NewIngressCtl(),
 			controllers.NewWsCtl(),
 		).
 		Launch()

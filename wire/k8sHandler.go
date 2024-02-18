@@ -24,3 +24,9 @@ func (h *K8sHandler) NsHandler() *handler.NsHandler {
 func (h *K8sHandler) EventHandler() *handler.EventHandler {
 	return &handler.EventHandler{}
 }
+
+func (h *K8sHandler) IngressHandler() *handler.IngressHandler { return &handler.IngressHandler{} }
+
+func (h *K8sHandler) SvcHandler() *handler.ServiceHandler {
+	return &handler.ServiceHandler{}
+}

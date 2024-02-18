@@ -8,7 +8,13 @@ import (
 )
 
 type NamespaceMap struct {
-	data sync.Map // [key string] []*corev1.Namespace    key=>namespace的名称
+	data *sync.Map // [key string] []*corev1.Namespace    key=>namespace的名称
+}
+
+func NewNamespaceMap() *NamespaceMap {
+	return &NamespaceMap{
+		data: new(sync.Map),
+	}
 }
 
 func (n *NamespaceMap) Get(ns string) *corev1.Namespace {
@@ -34,7 +40,7 @@ func (n *NamespaceMap) Delete(ns *corev1.Namespace) {
 func (n *NamespaceMap) ListAll() *model.NamespaceModel {
 	ret := make([]*model.NsModel, 0)
 
-	total, items := convertToMapItems(&n.data)
+	total, items := convertToMapItems(n.data)
 	sort.Sort(items)
 	for _, item := range items {
 		ret = append(ret, &model.NsModel{Name: item.key})

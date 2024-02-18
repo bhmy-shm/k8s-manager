@@ -9,7 +9,11 @@ import (
 )
 
 type PodMap struct {
-	data sync.Map // namespaces : corev1.Pod
+	data *sync.Map // namespaces : corev1.Pod
+}
+
+func NewPodMap() *PodMap {
+	return &PodMap{data: new(sync.Map)}
 }
 
 func (this *PodMap) ListByNs(ns string) []*corev1.Pod {

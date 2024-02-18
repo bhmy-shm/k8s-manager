@@ -21,3 +21,7 @@ func (*ServiceConfig) PodService() *service.PodService {
 }
 
 func (*ServiceConfig) NamespaceService() *service.NamespaceService { return service.NewNamespace() }
+
+func (*ServiceConfig) IngressService() *service.IngressService { return service.Ingress() }
+
+func (*ServiceConfig) SvcService() *service.SvcService { return service.Svc() }
