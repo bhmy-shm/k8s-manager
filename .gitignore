@@ -23,5 +23,5 @@
 go.work
 
 # other
-./doc
+doc
 .idea
