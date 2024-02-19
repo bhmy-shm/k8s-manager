@@ -8,13 +8,7 @@ import (
 )
 
 type ServiceMap struct {
-	data *sync.Map // [ns string] []*v1.Service
-}
-
-func NewServiceMap() *ServiceMap {
-	return &ServiceMap{
-		data: new(sync.Map),
-	}
+	data sync.Map // [ns string] []*v1.Service
 }
 
 func (s *ServiceMap) Get(ns string, name string) *corev1.Service {

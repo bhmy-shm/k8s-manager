@@ -6,8 +6,8 @@ import (
 	v1 "k8s.io/api/apps/v1"
 	"manager/internal/maps"
 	"manager/internal/service"
+	"manager/internal/types"
 	"manager/internal/wscore"
-	"manager/model"
 )
 
 type DepHandler struct {
@@ -19,7 +19,7 @@ func (d *DepHandler) OnAdd(obj interface{}) {
 
 	var (
 		err  error
-		list []*model.Deployment
+		list []*types.Deployment
 		ns   = obj.(*v1.Deployment).Namespace
 	)
 
@@ -39,7 +39,7 @@ func (d *DepHandler) OnAdd(obj interface{}) {
 func (d *DepHandler) OnUpdate(oldObj, newObj interface{}) {
 	var (
 		err  error
-		list []*model.Deployment
+		list []*types.Deployment
 		ns   = newObj.(*v1.Deployment).Namespace
 	)
 
@@ -64,7 +64,7 @@ func (d *DepHandler) OnDelete(obj interface{}) {
 
 		var (
 			err  error
-			list []*model.Deployment
+			list []*types.Deployment
 			ns   = obj.(*v1.Deployment).Namespace
 		)
 

@@ -8,13 +8,7 @@ import (
 )
 
 type IngressMap struct {
-	data *sync.Map // [ns string] []*v1.Ingress
-}
-
-func NewIngressMap() *IngressMap {
-	return &IngressMap{
-		data: new(sync.Map),
-	}
+	data sync.Map // [ns string] []*v1.Ingress
 }
 
 func (ig *IngressMap) Get(ns string, name string) *v1.Ingress {

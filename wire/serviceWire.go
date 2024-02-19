@@ -1,6 +1,7 @@
 package wire
 
 import (
+	gofkConf "github.com/bhmy-shm/gofks/core/config"
 	"manager/svc"
 )
 
@@ -8,9 +9,9 @@ type ServiceWire struct {
 	ctx *svc.ServiceContext
 }
 
-func NewServiceWire() *ServiceWire {
+func NewServiceWire(c *gofkConf.Config) *ServiceWire {
 	return &ServiceWire{
-		ctx: svc.NewServiceContext(),
+		ctx: svc.NewServiceContext(c),
 	}
 }
 

@@ -30,3 +30,7 @@ func (h *K8sHandler) IngressHandler() *handler.IngressHandler { return &handler.
 func (h *K8sHandler) SvcHandler() *handler.ServiceHandler {
 	return &handler.ServiceHandler{}
 }
+
+func (h *K8sHandler) ResourceHandler() *handler.ResourceHandler {
+	return &handler.ResourceHandler{}
+}

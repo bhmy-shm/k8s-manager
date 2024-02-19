@@ -4,7 +4,7 @@ import (
 	"github.com/bhmy-shm/gofks/core/errorx"
 	"github.com/bhmy-shm/gofks/core/logx"
 	"manager/internal/maps"
-	"manager/model"
+	"manager/internal/types"
 )
 
 type DeploymentService struct {
@@ -16,16 +16,16 @@ func Deployment() *DeploymentService {
 	return &DeploymentService{}
 }
 
-func (d *DeploymentService) List(ns string) ([]*model.Deployment, error) {
+func (d *DeploymentService) List(ns string) ([]*types.Deployment, error) {
 	depList, err := d.DepMap.ListByNs(ns)
 	if err != nil {
 		logx.Error("deployment list By Namespace failed:", err)
 		return nil, errorx.Wrap(err, "deployment list By Namespace failed")
 	}
 
-	var res []*model.Deployment
+	var res []*types.Deployment
 	for _, item := range depList {
-		res = append(res, &model.Deployment{
+		res = append(res, &types.Deployment{
 			NameSpace:  item.Namespace,
 			Name:       item.Name,
 			Replicas:   [3]int32{item.Status.Replicas, item.Status.AvailableReplicas, item.Status.UnavailableReplicas},

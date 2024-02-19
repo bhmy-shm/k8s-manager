@@ -6,7 +6,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"manager/internal/maps"
-	"manager/model"
+	"manager/internal/types"
 	"strconv"
 )
 
@@ -27,19 +27,19 @@ func (ig *IngressService) getIngressOptions(t IngressCode, item *v1.Ingress) boo
 	return false
 }
 
-func (ig *IngressService) ListByNs(ns string) ([]*model.IngressModel, error) {
+func (ig *IngressService) ListByNs(ns string) ([]*types.IngressModel, error) {
 
 	depList := ig.IngressMap.ListByNs(ns)
-	ret := make([]*model.IngressModel, len(depList))
+	ret := make([]*types.IngressModel, len(depList))
 
 	for i, item := range depList {
 
-		ret[i] = &model.IngressModel{
+		ret[i] = &types.IngressModel{
 			Name:       item.Name,
 			CreateTime: item.CreationTimestamp.Format("2006-01-02 15:04:05"),
 			NameSpace:  item.Namespace,
 			Host:       item.Spec.Rules[0].Host,
-			Options: model.IngressOptions{
+			Options: types.IngressOptions{
 				IsCros:    ig.getIngressOptions(IngressCodeCROS, item),
 				IsRewrite: ig.getIngressOptions(IngressCodeRewrite, item),
 			},
@@ -48,7 +48,7 @@ func (ig *IngressService) ListByNs(ns string) ([]*model.IngressModel, error) {
 	return ret, nil
 }
 
-func (ig *IngressService) AddPostIngress(post *model.IngressPost) error {
+func (ig *IngressService) AddPostIngress(post *types.IngressPost) error {
 
 	var (
 		className    = "nginx"

@@ -2,7 +2,7 @@ package service
 
 import (
 	"manager/internal/maps"
-	"manager/model"
+	"manager/internal/types"
 )
 
 type SvcService struct {
@@ -13,14 +13,14 @@ type SvcService struct {
 func Svc() *SvcService {
 	return &SvcService{}
 }
-func (s *SvcService) ListByNs(ns string) ([]*model.ServiceModel, error) {
+func (s *SvcService) ListByNs(ns string) ([]*types.ServiceModel, error) {
 
 	depList := s.SvcMap.ListAll(ns)
-	ret := make([]*model.ServiceModel, len(depList))
+	ret := make([]*types.ServiceModel, len(depList))
 
 	for i, item := range depList {
 
-		ret[i] = &model.ServiceModel{
+		ret[i] = &types.ServiceModel{
 			Name:       item.Name,
 			CreateTime: item.CreationTimestamp.Format("2006-01-02 15:04:05"),
 			NameSpace:  item.Namespace,

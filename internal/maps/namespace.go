@@ -2,19 +2,13 @@ package maps
 
 import (
 	corev1 "k8s.io/api/core/v1"
-	"manager/model"
+	"manager/internal/types"
 	"sort"
 	"sync"
 )
 
 type NamespaceMap struct {
-	data *sync.Map // [key string] []*corev1.Namespace    key=>namespace的名称
-}
-
-func NewNamespaceMap() *NamespaceMap {
-	return &NamespaceMap{
-		data: new(sync.Map),
-	}
+	data sync.Map // [key string] []*corev1.Namespace    key=>namespace的名称
 }
 
 func (n *NamespaceMap) Get(ns string) *corev1.Namespace {
@@ -37,16 +31,16 @@ func (n *NamespaceMap) Delete(ns *corev1.Namespace) {
 }
 
 // ListAll 显示所有的 namespace
-func (n *NamespaceMap) ListAll() *model.NamespaceModel {
-	ret := make([]*model.NsModel, 0)
+func (n *NamespaceMap) ListAll() *types.NamespaceModel {
+	ret := make([]*types.NsModel, 0)
 
-	total, items := convertToMapItems(n.data)
+	total, items := convertToMapItems(&n.data)
 	sort.Sort(items)
 	for _, item := range items {
-		ret = append(ret, &model.NsModel{Name: item.key})
+		ret = append(ret, &types.NsModel{Name: item.key})
 	}
 
-	return &model.NamespaceModel{
+	return &types.NamespaceModel{
 		Total: total,
 		List:  ret,
 	}

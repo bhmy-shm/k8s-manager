@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/gin-gonic/gin"
 	"manager/internal/maps"
-	"manager/model"
+	"manager/internal/types"
 	"time"
 )
 
@@ -18,7 +18,7 @@ func Pod() *PodService {
 }
 
 func (p *PodService) PagePods(ns string, page, size int) *ItemsPage {
-	pods := p.ListByNs(ns).([]*model.Pod)
+	pods := p.ListByNs(ns).([]*types.Pod)
 	readyCount := 0 //就绪的pod数量
 	allCount := 0   //总数量
 	ipods := make([]interface{}, len(pods))
@@ -36,11 +36,11 @@ func (p *PodService) PagePods(ns string, page, size int) *ItemsPage {
 func (p *PodService) ListByNs(ns string) interface{} {
 
 	podList := p.PodMap.ListByNs(ns)
-	ret := make([]*model.Pod, len(podList))
+	ret := make([]*types.Pod, len(podList))
 
 	if len(podList) > 0 {
 		for i, pod := range podList {
-			ret[i] = &model.Pod{
+			ret[i] = &types.Pod{
 				Name:       pod.Name,
 				NameSpace:  pod.Namespace,
 				Images:     p.Common.getImagesByPod(pod.Spec.Containers),

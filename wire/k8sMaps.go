@@ -11,25 +11,29 @@ func NewK8sMaps() *K8sMaps {
 }
 
 func (ks *K8sMaps) InitDepMap() *maps.DeploymentMap {
-	return maps.NewDeploymentMap()
+	return &maps.DeploymentMap{}
 }
 
 func (ks *K8sMaps) InitPodMap() *maps.PodMap {
-	return maps.NewPodMap()
+	return &maps.PodMap{}
 }
 
 func (ks *K8sMaps) InitNsMap() *maps.NamespaceMap {
-	return maps.NewNamespaceMap()
+	return &maps.NamespaceMap{}
 }
 
 func (ks *K8sMaps) InitEventMap() *maps.EventMap {
-	return maps.NewEventMap()
+	return &maps.EventMap{}
 }
 
 func (ks *K8sMaps) InitIngressMap() *maps.IngressMap {
-	return maps.NewIngressMap()
+	return &maps.IngressMap{}
 }
 
 func (ks *K8sMaps) InitSvcMap() *maps.ServiceMap {
-	return maps.NewServiceMap()
+	return &maps.ServiceMap{}
+}
+
+func (ks *K8sMaps) InitResourceMap() *maps.MetaResMapper {
+	return maps.NewMetaRespMapper()
 }

@@ -25,3 +25,9 @@ func (*ServiceConfig) NamespaceService() *service.NamespaceService { return serv
 func (*ServiceConfig) IngressService() *service.IngressService { return service.Ingress() }
 
 func (*ServiceConfig) SvcService() *service.SvcService { return service.Svc() }
+
+// storage 存储
+
+func (*ServiceConfig) ResourceService() *service.ResourceService {
+	return service.K8sResource()
+}

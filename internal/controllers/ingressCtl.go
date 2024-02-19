@@ -3,7 +3,7 @@ package controllers
 import (
 	"github.com/bhmy-shm/gofks"
 	"github.com/gin-gonic/gin"
-	"manager/model"
+	"manager/internal/types"
 	"manager/wire"
 	"net/http"
 )
@@ -28,7 +28,7 @@ func (ig *IngressCtl) Build(gofk *gofks.Gofk) {
 }
 
 func (ig *IngressCtl) AddIngress(c *gin.Context) {
-	params := &model.IngressPost{}
+	params := &types.IngressPost{}
 	err := c.ShouldBindJSON(params)
 	if err != nil {
 		InternalResp(c, RespField("reason", err))

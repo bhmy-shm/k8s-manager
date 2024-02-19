@@ -1,2 +1,20 @@
 server:
-  port: 8082
+  name: k8s-manager
+  port: 0.0.0.0:8082
+
+log:
+  ServiceName: k8s-manager
+  Mode: console
+  Encoding: plain
+  Path: logs
+  Level: debug
+  Compress: true
+  KeepDays: 3
+
+db:
+  debug: info #info,error
+  types: PgSQL
+  dataSourceName: postgres://postgres:db19990131.@127.0.0.1:5432/server?sslmode=disable&options=--lock_timeout=5000&options=--statement_timeout=5000
+  maxIdleConns: 30
+  maxOpenConns: 300
+  maxLifetime:
