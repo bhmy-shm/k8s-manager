@@ -1,12 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"github.com/bhmy-shm/gofks"
 	gofkConf "github.com/bhmy-shm/gofks/core/config"
-	"k8s.io/apimachinery/pkg/api/meta"
 	"manager/internal/controllers"
-	"manager/internal/handler"
 	"manager/internal/middlewares"
 	"manager/wire"
 )
@@ -14,20 +11,6 @@ import (
 func main() {
 
 	conf := gofkConf.Load()
-
-	go func() {
-		for {
-			get_obj, _ := handler.RateLimitQue.Get()
-			if rm_obj, ok := get_obj.(*handler.RateLimitResource); ok {
-				fmt.Print("类型是:", rm_obj.Type)
-				obj, err := meta.Accessor(rm_obj.Resource)
-				if err == nil {
-					fmt.Printf(" 资源是:%s/%s \n", obj.GetNamespace(),
-						obj.GetName())
-				}
-			}
-		}
-	}()
 
 	gofks.Ignite("/v1", middlewares.OnRequest()).
 		WireApply(

@@ -2,11 +2,13 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"github.com/bhmy-shm/gofks/core/logx"
 	"golang.org/x/time/rate"
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/util/workqueue"
+	"log"
 	"manager/internal/maps"
 	"manager/model"
 	"manager/svc"
@@ -80,4 +82,21 @@ func (r *ResourceHandler) OnDelete(obj interface{}) {
 	if err != nil {
 		logx.Errorf("OnDelete Resource 删除失败：%v", err)
 	}
+}
+
+func (r *ResourceHandler) RateLimitConsumer() {
+	log.Println("依赖注入运行消费者")
+	go func() {
+		for {
+			get_obj, _ := RateLimitQue.Get()
+			if rm_obj, ok := get_obj.(*RateLimitResource); ok {
+				fmt.Print("类型是:", rm_obj.Type)
+				obj, err := meta.Accessor(rm_obj.Resource)
+				if err == nil {
+					fmt.Printf(" 资源是:%s/%s \n", obj.GetNamespace(),
+						obj.GetName())
+				}
+			}
+		}
+	}()
 }
