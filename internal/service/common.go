@@ -1,9 +1,13 @@
 package service
 
 import (
+	"context"
 	"fmt"
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/metrics/pkg/client/clientset/versioned"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -42,6 +46,44 @@ func (c *CommonService) getMessage(dep *v1.Deployment) string {
 
 func (c *CommonService) getCreateTime(dep *v1.Deployment) string {
 	return dep.CreationTimestamp.Format(time.DateTime)
+}
+
+const hostPattern = "[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\\.?"
+
+func showLabel(key string) bool {
+	return !regexp.MustCompile(hostPattern).MatchString(key) //取的是仅匹配一次的，所以这里取反了
+}
+
+func (c *CommonService) FilterLabels(labels map[string]string) (ret []string) {
+	for k, v := range labels {
+		if showLabel(k) {
+			ret = append(ret, fmt.Sprintf("%s=%s", k, v))
+		}
+	}
+	return
+}
+
+func (c *CommonService) GetNodeUsage(client *versioned.Clientset, node *corev1.Node) []float64 {
+
+	nodeMetric, _ := client.MetricsV1beta1().
+		NodeMetricses().
+		Get(context.Background(), node.Name, metav1.GetOptions{})
+
+	//cpu 使用率
+	cpu := float64(nodeMetric.Usage.Cpu().MilliValue()) / float64(node.Status.Capacity.Cpu().MilliValue())
+
+	//memory 内存使用率
+	memory := float64(nodeMetric.Usage.Memory().MilliValue()) / float64(node.Status.Capacity.Memory().MilliValue())
+	return []float64{cpu, memory}
+}
+
+func (c *CommonService) FilterTaints(taints []corev1.Taint) (ret []string) {
+	for _, taint := range taints {
+		if showLabel(taint.Key) {
+			ret = append(ret, fmt.Sprintf("%s=%s:%s", taint.Key, taint.Value, taint.Effect))
+		}
+	}
+	return
 }
 
 // ---------- pod ---------

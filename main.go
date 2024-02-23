@@ -28,6 +28,7 @@ func main() {
 			controllers.NewIngressCtl(),
 			controllers.NewWsCtl(),
 			controllers.NewResourceCtl(),
+			controllers.NewNodeCtl(),
 		).
 		Launch()
 }

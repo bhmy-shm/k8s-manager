@@ -20,3 +20,7 @@ type Pod struct {
 	Message    string
 	CreateTime string
 }
+
+type ContainerModel struct {
+	Name string
+}

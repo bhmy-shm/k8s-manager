@@ -19,6 +19,7 @@ type serviceList struct {
 	IngressService    *service.IngressService    `inject:"-"`
 	SvcService        *service.SvcService        `inject:"-"`
 	ResourceService   *service.ResourceService   `inject:"-"`
+	NodeService       *service.NodeService       `inject:"-"`
 }
 
 type serviceModel struct {

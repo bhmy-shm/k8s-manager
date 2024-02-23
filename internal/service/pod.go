@@ -56,3 +56,16 @@ func (p *PodService) ListByNs(ns string) interface{} {
 
 	return ret
 }
+
+func (p *PodService) GetPodContainer(ns, podName string) []*types.ContainerModel {
+	ret := make([]*types.ContainerModel, 0)
+	pod := p.PodMap.Get(ns, podName)
+	if pod != nil {
+		for _, c := range pod.Spec.Containers {
+			ret = append(ret, &types.ContainerModel{
+				Name: c.Name,
+			})
+		}
+	}
+	return ret
+}

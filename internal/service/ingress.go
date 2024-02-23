@@ -27,6 +27,12 @@ func (ig *IngressService) getIngressOptions(t IngressCode, item *v1.Ingress) boo
 	return false
 }
 
+// -----
+
+func (ig *IngressService) Detail(ns, name string) *v1.Ingress {
+	return ig.IngressMap.Get(ns, name)
+}
+
 func (ig *IngressService) ListByNs(ns string) ([]*types.IngressModel, error) {
 
 	depList := ig.IngressMap.ListByNs(ns)
@@ -40,8 +46,10 @@ func (ig *IngressService) ListByNs(ns string) ([]*types.IngressModel, error) {
 			NameSpace:  item.Namespace,
 			Host:       item.Spec.Rules[0].Host,
 			Options: types.IngressOptions{
-				IsCros:    ig.getIngressOptions(IngressCodeCROS, item),
-				IsRewrite: ig.getIngressOptions(IngressCodeRewrite, item),
+				IsCros:      ig.getIngressOptions(IngressCodeCROS, item),
+				IsRewrite:   ig.getIngressOptions(IngressCodeRewrite, item),
+				IsAuth:      ig.getIngressOptions(IngressCodeBasicAuth, item),
+				IsRateLimit: ig.getIngressOptions(IngressCodeRateLimit, item),
 			},
 		}
 	}
@@ -104,9 +112,16 @@ func (ig *IngressService) AddPostIngress(post *types.IngressPost) error {
 	}
 
 	//调用创建ingress接口
-	_, err := ig.Client.NetworkingV1().
-		Ingresses(post.Namespace).
-		Create(context.Background(), ingress, metav1.CreateOptions{})
+	var err error
+	if post.IsUpdate {
+		_, err = ig.Client.NetworkingV1().
+			Ingresses(post.Namespace).
+			Update(context.Background(), ingress, metav1.UpdateOptions{})
+	} else {
+		_, err = ig.Client.NetworkingV1().
+			Ingresses(post.Namespace).
+			Create(context.Background(), ingress, metav1.CreateOptions{})
+	}
 
 	return err
 }

@@ -25,13 +25,14 @@ type K8sConfig struct {
 	EventHandler    *handler.EventHandler    `inject:"-"`
 	IngressHandler  *handler.IngressHandler  `inject:"-"`
 	ResourceHandler *handler.ResourceHandler `inject:"-"`
+	NodeHandler     *handler.NodeHandler     `inject:"-"`
 }
 
 func NewK8sConfig() *K8sConfig {
 	return &K8sConfig{}
 }
 
-func k8sRestConfigDefault() *rest.Config {
+func (conf *K8sConfig) k8sRestConfigDefault() *rest.Config {
 	// 取用户目录   Linux： ~   /home/xxx
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -92,6 +93,9 @@ func (conf *K8sConfig) InitInformer() informers.SharedInformerFactory {
 
 	ingressInformer := fact.Networking().V1().Ingresses() //监听ingress
 	ingressInformer.Informer().AddEventHandler(conf.IngressHandler)
+
+	NodeInformer := fact.Core().V1().Nodes() //监听node节点
+	NodeInformer.Informer().AddEventHandler(conf.NodeHandler)
 
 	fact.Start(wait.NeverStop)
 	return fact

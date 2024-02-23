@@ -26,6 +26,10 @@ func (*ServiceConfig) IngressService() *service.IngressService { return service.
 
 func (*ServiceConfig) SvcService() *service.SvcService { return service.Svc() }
 
+func (*ServiceConfig) NodeService() *service.NodeService {
+	return service.NewNodeService()
+}
+
 // storage 存储
 
 func (*ServiceConfig) ResourceService() *service.ResourceService {

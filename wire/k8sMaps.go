@@ -37,3 +37,7 @@ func (ks *K8sMaps) InitSvcMap() *maps.ServiceMap {
 func (ks *K8sMaps) InitResourceMap() *maps.MetaResMapper {
 	return maps.NewMetaRespMapper()
 }
+
+func (ks *K8sMaps) InitNodeMap() *maps.NodeMap {
+	return &maps.NodeMap{}
+}

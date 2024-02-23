@@ -1,6 +1,6 @@
 server:
   name: k8s-manager
-  port: 0.0.0.0:8082
+  listener: 0.0.0.0:8082
 
 log:
   ServiceName: k8s-manager

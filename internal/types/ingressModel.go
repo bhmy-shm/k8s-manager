@@ -1,10 +1,14 @@
 package types
 
+import "github.com/GehirnInc/crypt/apr1_crypt"
+
 // IngressModel 列表返回参数
 type (
 	IngressOptions struct {
-		IsCros    bool //是否开启跨域
-		IsRewrite bool //是否开启路径重写
+		IsCros      bool //是否开启跨域
+		IsRewrite   bool //是否开启路径重写
+		IsAuth      bool
+		IsRateLimit bool
 	}
 	IngressModel struct {
 		Name       string
@@ -30,7 +34,8 @@ type IngressRules struct {
 
 // IngressPost 提交Ingress 对象
 type IngressPost struct {
-	Name        string
+	IsUpdate    bool   //是否更新ingress
+	Name        string //ingress名称
 	Namespace   string
 	Rules       []*IngressRules //路由规则
 	Annotations string          //标签
@@ -58,3 +63,19 @@ type IngressPost struct {
 	  annotations:
 	    nginx.ingress.kubernetes.io/server-snippet:
 */
+
+type GenAuth struct {
+	Type      int    `json:"type"`
+	Namespace string `json:"namespace"`
+	SName     string `json:"sname"` // secretname
+	UName     string `json:"uname"` // 用户名
+	UPwd      string `json:"upwd"`  //用户密码
+}
+
+func HashApr1(password string) string {
+	s, err := apr1_crypt.New().Generate([]byte(password), nil)
+	if err != nil {
+		panic(err)
+	}
+	return s
+}

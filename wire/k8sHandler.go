@@ -34,3 +34,7 @@ func (h *K8sHandler) SvcHandler() *handler.ServiceHandler {
 func (h *K8sHandler) ResourceHandler() *handler.ResourceHandler {
 	return &handler.ResourceHandler{}
 }
+
+func (h *K8sHandler) NodeHandler() *handler.NodeHandler {
+	return &handler.NodeHandler{}
+}
